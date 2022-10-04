@@ -1,0 +1,18 @@
+# docker setup
+# nvidia-docker run -it -p 26017:8888 -p 26018:6006 --shm-size 96g --name bkj_pytorch18 -d -v /raid/cvml_user/bkj/Projects:/home/Projects pytorch/pytorch:1.8.0-cuda11.1-cudnn8-devel
+
+# transfer
+
+
+# training from scratch
+CUDA_VISIBLE_DEVICES=0 python scripts/image_train.py --data_dir ../data/obama/PCA_100_flipadd/ --class_cond False --diffusion_steps 1000 --learn_sigma False --noise_schedule linear --use_fp16 False --lr 2e-5 --batch_size 8 --rescale_learned_sigmas False --p2_gamma 1 --p2_k 1 --log_dir results 
+
+# sampling
+
+# sampling with Nearest Neighbors
+CUDA_VISIBLE_DEVICES=0 python scripts/image_nn_sample.py --class_cond False --diffusion_steps 100 --learn_sigma False --noise_schedule linear --timestep_respacing ddim25 --use_ddim True --data_dir ../data/obama/100/ --num_samples 100 --sample_dir samples/PCA --model_path results/Scratch-2022-10-04-07-22-20-500398/ema_0.9999_060000.pt
+CUDA_VISIBLE_DEVICES=0 python scripts/image_nn_sample.py --class_cond False --diffusion_steps 100 --learn_sigma False --noise_schedule linear --timestep_respacing ddim25 --use_ddim True --data_dir ../data/obama/100/ --num_samples 100 --sample_dir samples/PCA_5lyrs --model_path results/Scratch-2022-10-04-10-03-10-028051/ema_0.9999_100000.pt
+CUDA_VISIBLE_DEVICES=0 python scripts/image_nn_sample.py --class_cond False --diffusion_steps 100 --learn_sigma False --noise_schedule linear --timestep_respacing ddim25 --use_ddim True --data_dir ../data/obama/100/ --num_samples 100 --sample_dir samples/PCA_8lyrs --model_path results/Scratch-2022-10-04-10-04-31-434199/ema_0.9999_100000.pt
+
+
+# bulk sampling : sampling various ckpts at once for convenience.
